@@ -1,0 +1,17 @@
+{
+  "java.project.sourcePaths": ["."],
+  "java.project.referencedLibraries": [
+    ".\\javafx\\lib\\javafx.base.jar",
+    ".\\javafx\\lib\\javafx.controls.jar",
+    ".\\javafx\\lib\\javafx.fxml.jar",
+    ".\\javafx\\lib\\javafx.graphics.jar",
+    ".\\javafx\\lib\\javafx.media.jar",
+    ".\\javafx\\lib\\javafx.swing.jar",
+    ".\\javafx\\lib\\javafx.web.jar",
+    ".\\javafx\\lib\\javafx-swt.jar",
+    ".\\javafx\\lib\\jdk.jsobject.jar",
+    ".\\javafx\\lib\\jfx.incubator.input.jar",
+    ".\\javafx\\lib\\jfx.incubator.richtext.jar"
+  ],
+  "java.debug.settings.vmArgs": "--module-path \"./javafx/lib\" --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics"
+}
