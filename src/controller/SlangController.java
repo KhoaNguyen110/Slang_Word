@@ -1,4 +1,4 @@
-package src.control;
+package src.controller;
 
 import src.model.SlangDictionary;
 import src.model.SlangWord;
