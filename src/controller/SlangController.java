@@ -4,7 +4,6 @@ import src.model.SlangDictionary;
 import src.model.SlangWord;
 import src.model.SlangDAO;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class SlangController {
