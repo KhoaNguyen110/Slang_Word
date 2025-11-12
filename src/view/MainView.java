@@ -15,15 +15,24 @@ public class MainView {
 
         TextField searchField = new TextField();
         Button searchBtn = new Button("Search");
+        Button showBtn = new Button("Show all Slang Words");
         TextArea resultArea = new TextArea();
-
+        
         searchBtn.setOnAction(e -> {
             String query = searchField.getText();
             SlangWord result = controller.searchByWord(query);
             resultArea.setText(result == null ? "Not found" : result.toString());
         });
 
-        VBox top = new VBox(new Label("Enter Slang Word:"), searchField, searchBtn);
+        showBtn.setOnAction(e -> {
+            StringBuilder allSlangs = new StringBuilder();
+            for (SlangWord sw : controller.showAll().values()) {
+                allSlangs.append(sw.toString());
+            }
+            resultArea.setText(allSlangs.toString());
+        });
+
+        VBox top = new VBox(new Label("Enter Slang Word:"), searchField, searchBtn, showBtn);
         root.setTop(top);
         root.setCenter(resultArea);
     }

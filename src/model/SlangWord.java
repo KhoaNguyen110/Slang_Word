@@ -17,7 +17,7 @@ public class SlangWord {
 
     @Override
     public String toString() {
-        return word + " = " + String.join(" | ", definitions);
+        return word + " = " + String.join(" | ", definitions) + "\n";
     }
 }
 
