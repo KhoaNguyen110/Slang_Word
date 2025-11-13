@@ -10,9 +10,10 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import src.model.*;
 import java.util.*;
+import src.controller.SlangController;
 
 public class QuizGameView {
-    private SlangDictionary dict = SlangDictionary.getInstance();
+    private SlangController controller = new SlangController();
     private boolean typeA; // true = slang→definition, false = definition→slang
     private int questionCount = 0;
     private int correctCount = 0;
@@ -75,9 +76,8 @@ public class QuizGameView {
         questionCount++;
 
         // Random câu hỏi
-        List<SlangWord> all = new ArrayList<>(dict.getAll().values());
+        List<SlangWord> all = new ArrayList<>(controller.getAllSlang().values());
         Collections.shuffle(all);
-        System.out.println("Size: " + all.size());
 
         SlangWord correct = all.get(0);
         Set<String> options = new HashSet<>();

@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class QuizMenuView {
+
     public Scene getScene() {
         Label title = new Label("🎯 Quiz Game");
         title.setFont(new Font("Arial", 32));

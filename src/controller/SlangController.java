@@ -5,6 +5,7 @@ import src.model.SlangWord;
 import src.model.SlangDAO;
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
 
 public class SlangController {
     private SlangDictionary dict;
@@ -22,11 +23,15 @@ public class SlangController {
         return dict.findByWord(word);
     }
 
+    public List<SlangWord> searchByDefinition(String keyword) {
+        return dict.findByDefinition(keyword);
+    }
+
     public void addSlang(String word, String definition) {
         dict.addSlang(new SlangWord(word, java.util.List.of(definition)));
     }
 
-    public Map<String, SlangWord> showAll() {
+    public Map<String, SlangWord> getAllSlang() {
         return dict.getAll();
     }
 }

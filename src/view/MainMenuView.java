@@ -6,9 +6,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import src.controller.SlangController;
 
 public class MainMenuView {
-
+    private SlangController slangController = new SlangController();
+    
     public Scene getScene() {
         Label banner = new Label("📘 SLANG DICTIONARY");
         banner.setFont(new Font("Arial", 28));
@@ -37,6 +39,8 @@ public class MainMenuView {
                     + "-fx-padding: 50;");
 
         Scene scene = new Scene(root, 800, 600);
+
+
 
         // Xử lý chuyển cảnh
         btnSearch.setOnAction(e -> {
