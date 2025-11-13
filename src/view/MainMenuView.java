@@ -43,9 +43,9 @@ public class MainMenuView {
             ViewManager.getInstance().switchScene(new SearchView().getScene());
         });
 
-        // btnQuiz.setOnAction(e -> {
-        //     ViewManager.getInstance().switchScene(new QuizView().getScene());
-        // });
+        btnQuiz.setOnAction(e -> {
+            ViewManager.getInstance().switchScene(new QuizMenuView().getScene());
+        });
 
         // btnHistory.setOnAction(e -> {
         //     ViewManager.getInstance().switchScene(new HistoryView().getScene());
