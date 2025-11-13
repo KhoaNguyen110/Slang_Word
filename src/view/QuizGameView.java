@@ -77,16 +77,7 @@ public class QuizGameView {
         // Random câu hỏi
         List<SlangWord> all = new ArrayList<>(dict.getAll().values());
         Collections.shuffle(all);
-
-        // 💡 Lọc ra chỉ các slang có ít nhất 1 definition
-        all.removeIf(sw -> sw.getDefinitions() == null || sw.getDefinitions().isEmpty()
-                        || sw.getDefinitions().get(0).trim().isEmpty());
-
-        // Nếu file không đủ slang hợp lệ
-        if (all.size() < 4) {
-            lblQuestion.setText("⚠️ Not enough valid slang words in data!");
-            return;
-        }
+        System.out.println("Size: " + all.size());
 
         SlangWord correct = all.get(0);
         Set<String> options = new HashSet<>();
