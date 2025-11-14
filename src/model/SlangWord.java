@@ -13,6 +13,7 @@ public class SlangWord {
 
     public String getWord() { return word; }
     public List<String> getDefinitions() { return definitions; }
+    public void setWord(String word) { this.word = word; }
     public void setDefinitions(List<String> definitions) { this.definitions = definitions; }
 
     @Override

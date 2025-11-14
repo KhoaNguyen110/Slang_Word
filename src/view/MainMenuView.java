@@ -23,7 +23,7 @@ public class MainMenuView {
         header.setSpacing(10);
 
         // Các nút chức năng
-        Button btnSearch = new Button("🔍 Search");
+        Button btnSearch = new Button("🔍 Dictionary");
         Button btnQuiz = new Button("🎯 Quiz Game");
         Button btnHistory = new Button("📜 History");
         Button btnExit = new Button("❌ Exit");
@@ -44,7 +44,7 @@ public class MainMenuView {
 
         // Xử lý chuyển cảnh
         btnSearch.setOnAction(e -> {
-            ViewManager.getInstance().switchScene(new SearchView().getScene());
+            ViewManager.getInstance().switchScene(new DictionaryView().getScene());
         });
 
         btnQuiz.setOnAction(e -> {
