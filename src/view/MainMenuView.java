@@ -51,9 +51,9 @@ public class MainMenuView {
             ViewManager.getInstance().switchScene(new QuizMenuView().getScene());
         });
 
-        // btnHistory.setOnAction(e -> {
-        //     ViewManager.getInstance().switchScene(new HistoryView().getScene());
-        // });
+        btnHistory.setOnAction(e -> {
+            ViewManager.getInstance().switchScene(new HistoryView().getScene());
+        });
 
         btnExit.setOnAction(e -> System.exit(0));
 

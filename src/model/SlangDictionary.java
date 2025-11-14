@@ -2,10 +2,13 @@ package src.model;
 
 import java.util.*;
 
+/**
+ * SlangDictionary with deep-copy backup and restore.
+ */
 public class SlangDictionary {
     private static SlangDictionary instance;
     private Map<String, SlangWord> dictionary;
-    private Map<String, SlangWord> originalSnapshot; // backup để reset
+    private Map<String, SlangWord> originalSnapshot; // deep-copy snapshot
     private final Random random = new Random();
 
     private SlangDictionary() {
@@ -17,12 +20,11 @@ public class SlangDictionary {
         return instance;
     }
 
-    // Thêm / ghi đè (put)
+    // Basic operations
     public void addSlang(SlangWord slang) {
         dictionary.put(slang.getWord(), slang);
     }
 
-    // Tìm theo word
     public SlangWord findByWord(String word) {
         if (word == null) return null;
         String upper = word.toUpperCase().trim();
@@ -30,7 +32,6 @@ public class SlangDictionary {
         return dictionary.get(word);
     }
 
-    // Tìm theo definition
     public List<SlangWord> findByDefinition(String keyword) {
         List<SlangWord> result = new ArrayList<>();
         if (keyword == null || keyword.trim().isEmpty()) return result;
@@ -38,7 +39,6 @@ public class SlangDictionary {
         String lowerKey = keyword.toLowerCase().trim();
         for (SlangWord slang : dictionary.values()) {
             for (String def : slang.getDefinitions()) {
-                // Tách nhiều nghĩa, ví dụ "Cool | excellent"
                 String[] parts = def.split("\\|");
                 for (String p : parts) {
                     if (p.trim().toLowerCase().contains(lowerKey) || p.trim().contains(keyword.trim())) {
@@ -52,50 +52,63 @@ public class SlangDictionary {
     }
 
     public void clear() { dictionary.clear(); }
-
     public Map<String, SlangWord> getAll() { return dictionary; }
 
-    // --- New methods ---
+    // --- New: deep-copy backup / reset ---
 
-    // Lưu snapshot ban đầu (gọi 1 lần sau khi load dữ liệu từ file)
+    /**
+     * Create a deep-copy snapshot of current dictionary.
+     * Each SlangWord is duplicated (new instance) with a new List of definitions,
+     * so later mutations on current dictionary won't affect the snapshot.
+     *
+     * Call this once after initial load from file.
+     */
     public void backupOriginal() {
         originalSnapshot = new HashMap<>();
         for (Map.Entry<String, SlangWord> e : dictionary.entrySet()) {
-            // Nếu cần deep copy SlangWord thì làm ở đây. Giả sử SlangWord copy constructor không có,
-            // ta giữ reference (nếu bạn muốn copy thực sự: tạo SlangWord mới với list copy).
-            originalSnapshot.put(e.getKey(), e.getValue());
+            SlangWord copy = deepCopySlang(e.getValue());
+            originalSnapshot.put(copy.getWord(), copy);
         }
     }
 
-    // Khôi phục từ snapshot (nếu đã backup)
+    /**
+     * Restore dictionary from the snapshot (if present).
+     * Restores new copies of each saved SlangWord into current dictionary.
+     */
     public void resetToOriginal() {
         if (originalSnapshot == null) return;
         dictionary.clear();
         for (Map.Entry<String, SlangWord> e : originalSnapshot.entrySet()) {
-            dictionary.put(e.getKey(), e.getValue());
+            SlangWord copy = deepCopySlang(e.getValue());
+            dictionary.put(copy.getWord(), copy);
         }
     }
 
-    // Edit: thay entry cũ bằng entry mới (có thể đổi key)
+    // Edit: remove old key and insert newSlang under its own word (handles rename)
     public boolean editSlang(String oldWord, SlangWord newSlang) {
         if (oldWord == null || newSlang == null) return false;
         if (!dictionary.containsKey(oldWord)) return false;
-        // Nếu đổi key, remove old, put new
         dictionary.remove(oldWord);
         dictionary.put(newSlang.getWord(), newSlang);
         return true;
     }
 
-    // Delete
     public boolean deleteSlang(String word) {
         if (word == null) return false;
         return dictionary.remove(word) != null;
     }
 
-    // Get random slang
     public SlangWord getRandomSlang() {
         if (dictionary.isEmpty()) return null;
-        List<SlangWord> list = new ArrayList<>(dictionary.values());
-        return list.get(random.nextInt(list.size()));
+        return dictionary.get(new ArrayList<>(dictionary.keySet()).get(random.nextInt(dictionary.size())));
+    }
+
+    // Helper to deep-copy a SlangWord. Assumes SlangWord has constructor SlangWord(String, List<String>)
+    private SlangWord deepCopySlang(SlangWord original) {
+        if (original == null) return null;
+        List<String> defs = original.getDefinitions();
+        List<String> defsCopy = defs == null ? new ArrayList<>() : new ArrayList<>(defs);
+        // create a new SlangWord instance using the copied list
+        return new SlangWord(original.getWord(), defsCopy);
     }
 }
