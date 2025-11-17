@@ -13,7 +13,7 @@ import java.util.*;
 import src.controller.SlangController;
 
 public class QuizGameView {
-    private SlangController controller = new SlangController();
+    private SlangController controller = SlangController.getInstance();
     private boolean typeA; // true = slang→definition, false = definition→slang
     private int questionCount = 0;
     private int correctCount = 0;

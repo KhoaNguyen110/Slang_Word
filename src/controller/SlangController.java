@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
  * All modifications create a new mutable ArrayList and then call setDefinitions(...) on the SlangWord.
  */
 public class SlangController {
-    private final SlangDictionary dict;
+    private static final SlangController INSTANCE = new SlangController(true);
     private final List<SearchHistoryEntry> history = new ArrayList<>();
-
+     private final SlangDictionary dict;
     public enum AddOption {
         OVERWRITE,
         DUPLICATE,
@@ -35,7 +35,7 @@ public class SlangController {
         FAILED
     }
 
-    public SlangController() {
+    public SlangController(boolean loadData) {
         dict = SlangDictionary.getInstance(); // Singleton pattern
         try {
             SlangDAO.load(dict);
@@ -43,6 +43,10 @@ public class SlangController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static SlangController getInstance() {
+        return INSTANCE;
     }
 
     // --- Search / Read (ghi lịch sử) ---

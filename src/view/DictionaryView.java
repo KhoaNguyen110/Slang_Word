@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * - Interacts with SlangController (MVC).
  */
 public class DictionaryView {
-    private final SlangController controller = new SlangController();
+    private final SlangController controller = SlangController.getInstance();
     private final ObservableList<SlangWord> items = FXCollections.observableArrayList();
     private ListView<SlangWord> listView;
 

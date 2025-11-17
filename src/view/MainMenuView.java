@@ -9,7 +9,14 @@ import javafx.scene.text.Font;
 import src.controller.SlangController;
 
 public class MainMenuView {
-    private SlangController slangController = new SlangController();
+   private final SlangController controller;
+   public MainMenuView() {
+       this.controller = SlangController.getInstance();
+    }
+    
+    public MainMenuView(SlangController controller) {
+        this.controller = controller;
+    }
     
     public Scene getScene() {
         Label banner = new Label("📘 SLANG DICTIONARY");
@@ -52,7 +59,7 @@ public class MainMenuView {
         });
 
         btnHistory.setOnAction(e -> {
-            ViewManager.getInstance().switchScene(new HistoryView().getScene());
+            ViewManager.getInstance().switchScene(new HistoryView(controller).getScene());
         });
 
         btnExit.setOnAction(e -> System.exit(0));
