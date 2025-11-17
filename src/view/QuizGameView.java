@@ -26,6 +26,7 @@ public class QuizGameView {
     private VBox root;
 
     public QuizGameView(boolean typeA) {
+        this.controller = SlangController.getInstance();
         this.typeA = typeA;
     }
 

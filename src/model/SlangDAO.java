@@ -11,10 +11,11 @@ public class SlangDAO {
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.contains("`")) continue;
-                String[] parts = line.split("`");
+                String[] parts = line.split("`", 2);
                 if (parts.length < 2) continue;
                 String word = parts[0].trim();
-                List<String> defs = Arrays.asList(parts[1].split("\\|"));
+                // Ensure mutable list
+                List<String> defs = new ArrayList<>(Arrays.asList(parts[1].split("\\|")));
                 dict.addSlang(new SlangWord(word, defs));
             }
         }

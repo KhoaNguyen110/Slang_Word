@@ -4,6 +4,7 @@ import src.model.SlangDictionary;
 import src.model.SlangWord;
 import src.model.SlangDAO;
 import src.model.SearchHistoryEntry;
+import src.model.DefinitionIndex;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,36 +13,27 @@ import java.util.stream.Collectors;
 /**
  * SlangController (MVC)
  * - Wrapper quanh SlangDictionary + SlangDAO
- * - Quản lý lịch sử tìm kiếm: record, get, delete by index, clear all
- *
- * NOTE: ensure we never attempt to modify immutable lists returned by SlangWord.getDefinitions().
- * All modifications create a new mutable ArrayList and then call setDefinitions(...) on the SlangWord.
+ * - Quản lý lịch sử tìm kiếm
+ * - Quản lý persist: dictionary + inverted index
  */
 public class SlangController {
     private static final SlangController INSTANCE = new SlangController(true);
     private final List<SearchHistoryEntry> history = new ArrayList<>();
-     private final SlangDictionary dict;
-    public enum AddOption {
-        OVERWRITE,
-        DUPLICATE,
-        CANCEL
-    }
+    private final SlangDictionary dict;
 
-    public enum AddResult {
-        ADDED,
-        OVERWRITTEN,
-        DUPLICATED,
-        EXISTS,
-        FAILED
-    }
+    public enum AddOption { OVERWRITE, DUPLICATE, CANCEL }
+    public enum AddResult { ADDED, OVERWRITTEN, DUPLICATED, EXISTS, FAILED }
 
     public SlangController(boolean loadData) {
         dict = SlangDictionary.getInstance(); // Singleton pattern
-        try {
-            SlangDAO.load(dict);
-            dict.backupOriginal();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (loadData) {
+            try {
+                SlangDAO.load(dict);              // load từ file data/slang.txt
+                dict.loadOrBuildIndex();          // load index nếu có, nếu không build + save
+                dict.backupOriginal();            // snapshot gốc sau khi load
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -76,11 +68,7 @@ public class SlangController {
 
     public void resetToOriginal() {
         dict.resetToOriginal();
-        try {
-            SlangDAO.save(dict);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        persist(); // save dict + index sau khi reset
     }
 
     // --- Random ---
@@ -89,10 +77,6 @@ public class SlangController {
     }
 
     // --- Add ---
-    /**
-     * Add new slang. If exists, return EXISTS (do not modify existing).
-     * definitionsRaw can contain '|' or newline separators.
-     */
     public AddResult addSlang(String word, String definitionsRaw) {
         if (word == null || word.trim().isEmpty() || definitionsRaw == null || definitionsRaw.trim().isEmpty()) {
             return AddResult.FAILED;
@@ -103,7 +87,6 @@ public class SlangController {
         if (existing != null) {
             return AddResult.EXISTS;
         } else {
-            // Ensure we pass a mutable list to SlangWord (avoid immutable lists)
             SlangWord sw = new SlangWord(key, new ArrayList<>(defs));
             dict.addSlang(sw);
             persist();
@@ -111,11 +94,6 @@ public class SlangController {
         }
     }
 
-    /**
-     * Add with chosen option when there is an existing word.
-     * - OVERWRITE: replace definitions
-     * - DUPLICATE: append definitions to existing definitions (avoiding duplicates)
-     */
     public AddResult addSlang(String word, String definitionsRaw, AddOption option) {
         if (word == null || word.trim().isEmpty() || definitionsRaw == null || definitionsRaw.trim().isEmpty()) {
             return AddResult.FAILED;
@@ -131,13 +109,11 @@ public class SlangController {
             return AddResult.ADDED;
         } else {
             if (option == AddOption.OVERWRITE) {
-                // Replace with a new mutable list
                 existing.setDefinitions(new ArrayList<>(defs));
-                dict.addSlang(existing);
+                dict.addSlang(existing); // addSlang sẽ tự update index (remove old + add new)
                 persist();
                 return AddResult.OVERWRITTEN;
             } else if (option == AddOption.DUPLICATE) {
-                // Create a new mutable list copying current definitions, then append new defs avoiding repetitions
                 List<String> merged = new ArrayList<>();
                 List<String> current = existing.getDefinitions();
                 if (current != null) merged.addAll(current);
@@ -145,7 +121,7 @@ public class SlangController {
                     if (!merged.contains(d)) merged.add(d);
                 }
                 existing.setDefinitions(merged);
-                dict.addSlang(existing);
+                dict.addSlang(existing); // update index
                 persist();
                 return AddResult.DUPLICATED;
             } else {
@@ -161,10 +137,8 @@ public class SlangController {
         if (existing == null) return false;
 
         List<String> newDefs = parseDefinitions(definitionsRaw);
-        // set new word and new mutable definitions list
-        existing.setWord(newWord.trim());
-        existing.setDefinitions(new ArrayList<>(newDefs));
-        boolean ok = dict.editSlang(oldWord, existing);
+        SlangWord edited = new SlangWord(newWord.trim(), new ArrayList<>(newDefs));
+        boolean ok = dict.editSlang(oldWord, edited);
         if (ok) persist();
         return ok;
     }
@@ -178,26 +152,22 @@ public class SlangController {
     }
 
     // --- History management ---
-    // Record a history entry; newest entries are at index 0
     private void recordHistory(String query, String type, List<String> resultWords) {
         if (query == null) query = "";
         SearchHistoryEntry entry = new SearchHistoryEntry(query, type == null ? "" : type, resultWords == null ? Collections.emptyList() : new ArrayList<>(resultWords));
         history.add(0, entry);
     }
 
-    // Return unmodifiable list (newest-first)
     public List<SearchHistoryEntry> getSearchHistory() {
         return Collections.unmodifiableList(history);
     }
 
-    // Delete an entry by its index in the history list (index 0 is newest)
     public boolean deleteHistoryEntry(int index) {
         if (index < 0 || index >= history.size()) return false;
         history.remove(index);
         return true;
     }
 
-    // Clear all history
     public void clearSearchHistory() {
         history.clear();
     }
@@ -215,6 +185,7 @@ public class SlangController {
     private void persist() {
         try {
             SlangDAO.save(dict);
+            DefinitionIndex.save(dict.getDefIndex()); // LƯU index để lần sau không cần build lại
         } catch (IOException e) {
             e.printStackTrace();
         }

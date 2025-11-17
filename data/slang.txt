@@ -205,7 +205,6 @@ SWIDT`See What I Did There?
 SLI`Scalable Link Interface
 SMACKED`High on marijuana
 STYL`Speak To You Later
-&APOS; S`Wrongly displayed 's
 SLM`Salaam| hello
 BBFN`Bye Bye For Now
 DYOR`Do Your Own Research
@@ -4121,8 +4120,8 @@ ZUP`What's up?
 OOTD`Offer Of The Day| Outfit Of The Day
 ITA`I Totally Agree
 WAEFRD`When All Else Fails, Read Directions
-Slag`Meaning
 ZUT`Damn it
+Slag`Meaning
 BION`Believe It Or Not
 ITC`In That Case| In This Channel
 ITF`In The Future
@@ -4760,6 +4759,7 @@ DRAW`Cannabis
 LAA`Lad| mate
 YEHET`Yes In Sehun's Happy Mode
 LAD`Guy
+&APOS; S`Wrongly displayed 's
 LAG`Slow response
 LAL`Laughing A Lot/Little
 LAK`Love And Kisses

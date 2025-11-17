@@ -29,8 +29,6 @@ public class DictionaryView {
 
     public DictionaryView(SlangController controller) {
         this.controller = controller;
-        // backup snapshot once loaded to allow reset
-        controller.backupOriginal();
     }
 
     public Scene getScene() {
