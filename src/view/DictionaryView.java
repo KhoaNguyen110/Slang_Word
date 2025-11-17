@@ -23,11 +23,12 @@ import java.util.stream.Collectors;
  * - Interacts with SlangController (MVC).
  */
 public class DictionaryView {
-    private final SlangController controller = SlangController.getInstance();
+    private final SlangController controller;
     private final ObservableList<SlangWord> items = FXCollections.observableArrayList();
     private ListView<SlangWord> listView;
 
-    public DictionaryView() {
+    public DictionaryView(SlangController controller) {
+        this.controller = controller;
         // backup snapshot once loaded to allow reset
         controller.backupOriginal();
     }

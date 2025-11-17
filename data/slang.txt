@@ -14,7 +14,7 @@ BBQ`Barbecue| Better Be Quick
 10-4`Understood, OK
 SDA`Seventh-Day Adventist
 BBS`Be Back Soon| Bulletin Board System
-U.O.E.N.O`You Don't Even Know
+U.O.E.N.O`You Don't Even Knowf
 YEAP`Yes
 10-2`Radio code for 'Receiving well'
 BBR`Blonde, Brunette, Redhead
@@ -205,7 +205,7 @@ SWIDT`See What I Did There?
 SLI`Scalable Link Interface
 SMACKED`High on marijuana
 STYL`Speak To You Later
-&APOS;S`Wrongly displayed 's
+&APOS; S`Wrongly displayed 's
 SLM`Salaam| hello
 BBFN`Bye Bye For Now
 DYOR`Do Your Own Research

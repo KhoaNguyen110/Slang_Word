@@ -51,7 +51,7 @@ public class MainMenuView {
 
         // Xử lý chuyển cảnh
         btnSearch.setOnAction(e -> {
-            ViewManager.getInstance().switchScene(new DictionaryView().getScene());
+            ViewManager.getInstance().switchScene(new DictionaryView(controller).getScene());
         });
 
         btnQuiz.setOnAction(e -> {
